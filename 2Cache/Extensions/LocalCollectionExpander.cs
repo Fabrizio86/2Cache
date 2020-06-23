@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    public class LocalCollectionExpander : ExpressionVisitor
+    public partial class LocalCollectionExpander : ExpressionVisitor
     {
         public static Expression Rewrite(Expression expression)
         {
@@ -54,26 +54,6 @@
             var printer = Activator.CreateInstance(printerType, value);
 
             return Expression.Constant(printer);
-        }
-
-        /// <summary>
-        /// Overrides ToString to print each element of a collection.
-        /// </summary>
-        /// <remarks>
-        /// Inherits List in order to support List.Contains instance method as well
-        /// as standard Enumerable.Contains/Any extension methods.
-        /// </remarks>
-        class Printer<T> : List<T>
-        {
-            public Printer(IEnumerable collection)
-            {
-                this.AddRange(collection.Cast<T>());
-            }
-
-            public override string ToString()
-            {
-                return "{" + this.ToConcatenatedString(t => t.ToString(), "|") + "}";
-            }
         }
     }
 }

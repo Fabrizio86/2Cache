@@ -1,2 +1,2 @@
 # 2Cache
-Second Level Coaching for Entity Framework Core
+Second Level Caching for Entity Framework Core

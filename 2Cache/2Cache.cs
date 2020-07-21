@@ -27,10 +27,9 @@
         /// <returns></returns>
         public static IEnumerable<T> FromCache<T>(this IQueryable<T> query, TimeSpan expiration)
         {
-            IEnumerable<T> result = null;
-
             string key = query.GetKey();
             ICachingProvider provider = ProviderManager.Provider;
+            IEnumerable<T> result;
             provider.Get(out result, key, expiration, query);
 
             return result;

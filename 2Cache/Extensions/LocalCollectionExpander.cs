@@ -6,54 +6,20 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    public partial class LocalCollectionExpander : ExpressionVisitor
+    /// <summary>
+    /// Class to handle the expansion of the queries to include local variables.
+    /// </summary>
+    public class LocalCollectionExpander : ExpressionVisitor
     {
+
+        /// <summary>
+        /// Handles the rewrite of the query.
+        /// </summary>
+        /// <param name="expression">The expression to visit</param>
+        /// <returns>Returns a new instance of <see cref="Expression"/> evaluated</returns>
         public static Expression Rewrite(Expression expression)
         {
             return new LocalCollectionExpander().Visit(expression);
-        }
-
-        protected override Expression VisitMethodCall(MethodCallExpression node)
-        {
-            // pair the method's parameter types with its arguments
-            var map = node.Method.GetParameters()
-                .Zip(node.Arguments, (p, a) => new { Param = p.ParameterType, Arg = a })
-                .ToLinkedList();
-
-            // deal with instance methods
-            var instanceType = node.Object == null ? null : node.Object.Type;
-            map.AddFirst(new { Param = instanceType, Arg = node.Object });
-
-            // for any local collection parameters in the method, make a
-            // replacement argument which will print its elements
-            var replacements = (from x in map
-                                where x.Param != null && x.Param.IsGenericType
-                                let g = x.Param.GetGenericTypeDefinition()
-                                where g == typeof(IEnumerable<>) || g == typeof(List<>)
-                                where x.Arg.NodeType == ExpressionType.Constant
-                                let elementType = x.Param.GetGenericArguments().Single()
-                                let printer = MakePrinter((ConstantExpression)x.Arg, elementType)
-                                select new { x.Arg, Replacement = printer }).ToList();
-
-            if (replacements.Any())
-            {
-                var args = map.Select(x => (from r in replacements
-                                            where r.Arg == x.Arg
-                                            select r.Replacement).SingleOrDefault() ?? x.Arg).ToList();
-
-                node = node.Update(args.First(), args.Skip(1));
-            }
-
-            return base.VisitMethodCall(node);
-        }
-
-        ConstantExpression MakePrinter(ConstantExpression enumerable, Type elementType)
-        {
-            var value = (IEnumerable)enumerable.Value;
-            var printerType = typeof(Printer<>).MakeGenericType(elementType);
-            var printer = Activator.CreateInstance(printerType, value);
-
-            return Expression.Constant(printer);
         }
     }
 }

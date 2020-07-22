@@ -8,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C34A46E0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTesting", "UnitTesting\UnitTesting.csproj", "{31592B27-03D4-466C-8ED6-D2ECFB5D8624}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{D24C473A-29E0-43A8-944E-DA3F30A21C77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{31592B27-03D4-466C-8ED6-D2ECFB5D8624}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31592B27-03D4-466C-8ED6-D2ECFB5D8624}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31592B27-03D4-466C-8ED6-D2ECFB5D8624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D24C473A-29E0-43A8-944E-DA3F30A21C77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D24C473A-29E0-43A8-944E-DA3F30A21C77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D24C473A-29E0-43A8-944E-DA3F30A21C77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D24C473A-29E0-43A8-944E-DA3F30A21C77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

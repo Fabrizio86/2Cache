@@ -5,6 +5,9 @@
     using System.Linq;
     using global::Main2Cache.Interfaces;
 
+    /// <summary>
+    /// Extension class to facilitate integrating the cache in the query.
+    /// </summary>
     public static class Main2Cache
     {
         /// <summary>
@@ -29,8 +32,7 @@
         {
             string key = query.GetKey();
             ICachingProvider provider = ProviderManager.Provider;
-            IEnumerable<T> result;
-            provider.Get(out result, key, expiration, query);
+            provider.Get(out IEnumerable<T> result, key, expiration, query);
 
             return result;
         }

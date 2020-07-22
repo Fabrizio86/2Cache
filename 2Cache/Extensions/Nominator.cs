@@ -4,52 +4,69 @@
     using System.Collections.Generic;
     using System.Linq.Expressions;
 
-    public static partial class Evaluator
+    /// <summary>
+    /// Performs bottom-up analysis to determine which nodes can possibly
+    /// be part of an evaluated sub-tree.
+    /// </summary>
+    internal class Nominator : ExpressionVisitor
     {
+        Func<Expression, bool> canBeEvaluated;
+        HashSet<Expression> candidates;
+        bool cannotBeEvaluated;
+
         /// <summary>
-        /// Performs bottom-up analysis to determine which nodes can possibly
-        /// be part of an evaluated sub-tree.
+        /// Constructor with parameters.
         /// </summary>
-        class Nominator : ExpressionVisitor
+        /// <param name="canBeEvaluated">Assess if the expression can be evaluated locally</param>
+        internal Nominator(Func<Expression, bool> canBeEvaluated)
         {
-            Func<Expression, bool> fnCanBeEvaluated;
-            HashSet<Expression> candidates;
-            bool cannotBeEvaluated;
+            this.canBeEvaluated = canBeEvaluated;
+        }
 
-            internal Nominator(Func<Expression, bool> fnCanBeEvaluated)
-            {
-                this.fnCanBeEvaluated = fnCanBeEvaluated;
-            }
+        /// <summary>
+        /// Analyze the expression.
+        /// </summary>
+        /// <param name="expression">The expression to visit</param>
+        /// <returns>Returns instance of <see cref="HashSet{Expression}"/></returns>
+        internal HashSet<Expression> Nominate(Expression expression)
+        {
+            this.candidates = new HashSet<Expression>();
+            this.Visit(expression);
+            return this.candidates;
+        }
 
-            internal HashSet<Expression> Nominate(Expression expression)
+        /// <inheritdoc cref="ExpressionVisitor.Visit(Expression)"/>
+        public override Expression Visit(Expression expression)
+        {
+            if (expression == null)
             {
-                this.candidates = new HashSet<Expression>();
-                this.Visit(expression);
-                return this.candidates;
-            }
-
-            public override Expression Visit(Expression expression)
-            {
-                if (expression != null)
-                {
-                    bool saveCannotBeEvaluated = this.cannotBeEvaluated;
-                    this.cannotBeEvaluated = false;
-                    base.Visit(expression);
-                    if (!this.cannotBeEvaluated)
-                    {
-                        if (this.fnCanBeEvaluated(expression))
-                        {
-                            this.candidates.Add(expression);
-                        }
-                        else
-                        {
-                            this.cannotBeEvaluated = true;
-                        }
-                    }
-                    this.cannotBeEvaluated |= saveCannotBeEvaluated;
-                }
                 return expression;
             }
+
+            // store the current flag
+            bool saveCannotBeEvaluated = this.cannotBeEvaluated;
+
+            // set it to false
+            this.cannotBeEvaluated = false;
+
+            // call the base method
+            base.Visit(expression);
+
+            // if the flag is still false
+            if (!this.cannotBeEvaluated)
+            {
+                if (this.canBeEvaluated(expression))
+                {
+                    this.candidates.Add(expression);
+                }
+                else
+                {
+                    this.cannotBeEvaluated = true;
+                }
+            }
+
+            this.cannotBeEvaluated |= saveCannotBeEvaluated;
+            return expression;
         }
     }
 }

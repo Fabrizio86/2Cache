@@ -3,10 +3,15 @@
     using System;
     using System.Linq;
     using System.Linq.Expressions;
-    using global::Main2Cache.Utilities;
 
+    /// <summary>
+    /// Class to generate the key for the query to cache.
+    /// </summary>
     public static class GetQueryKey
     {
+        /// <summary>
+        /// Determines if the query can be first evaluated locally to add the posted parameters to the cache key.
+        /// </summary>
         static Func<Expression, bool> CanBeEvaluatedLocally
         {
             get
@@ -26,6 +31,12 @@
             }
         }
 
+        /// <summary>
+        /// Generates the key of the cache based on the query expression.
+        /// This allows the system, when CRUD operations occurs, determin which cached result to expire.
+        /// </summary>
+        /// <param name="query">The query item to cache</param>
+        /// <returns>Returns the stored cached json result</returns>
         public static string GetKey(this IQueryable query)
         {
             string result = string.Empty;
@@ -33,9 +44,7 @@
             expression = Evaluator.PartialEval(expression, CanBeEvaluatedLocally);
             expression = LocalCollectionExpander.Rewrite(expression);
             string key = expression.ToString();
-            result = KeyGenerator.ComputeKey(key);
-
-            return result;
+            return key;
         }
     }
 }

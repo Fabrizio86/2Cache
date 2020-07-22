@@ -5,6 +5,9 @@
     using System.Linq.Expressions;
     using System.Text;
 
+    /// <summary>
+    /// Class to perform local evaluation of expression tree.
+    /// </summary>
     public static partial class Evaluator
     {
         /// <summary>

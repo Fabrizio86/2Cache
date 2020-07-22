@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using global::Main2Cache.Interfaces;
-    using System.Text.Json;
     using System.Linq;
 
     /// <summary>
@@ -31,17 +30,18 @@
         {
             if (cache.ContainsKey(key) && !cache[key].IsExpired)
             {
-                result = JsonSerializer.Deserialize<List<T>>(cache[key].Result);
+                result = (IEnumerable<T>)cache[key].Result;
             }
             else
             {
-                result = query.ToList();
+                var queryResult = query.ToList();
+                result = queryResult;
 
                 this.cache[key] = new OperationResult
                 {
-                    key = key,
+                    Key = key,
                     Expiration = expiration,
-                    Result = JsonSerializer.Serialize(result)
+                    Result = queryResult,
                 };
             }
         }

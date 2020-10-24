@@ -6,6 +6,7 @@
     public enum ProviderType
     {
         InMemory,
-        SqlBackend
+        SqlBackend,
+        Custom
     }
 }

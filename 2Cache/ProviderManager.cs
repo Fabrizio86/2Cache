@@ -30,6 +30,8 @@
                 case Configurations.ProviderType.SqlBackend:
                     Provider = new SqlProvider(Config);
                     break;
+                case Configurations.ProviderType.Custom:
+                    throw new NotImplementedException();
                 default:
                     throw new InvalidOperationException("Invalid configuration parameters");
             }

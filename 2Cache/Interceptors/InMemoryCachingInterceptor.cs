@@ -5,6 +5,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// In Memory Caching class intercepting command to perform storing and expiring of cache.
+    /// </summary>
     public class InMemoryCachingInterceptor : DbCommandInterceptor
     {
 
